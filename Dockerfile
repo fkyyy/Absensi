@@ -3,15 +3,16 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 WORKDIR /app
 
 # Salin file csproj dari setiap proyek untuk melakukan restore dependensi
-COPY API/API.csproj .API/
-COPY Application/Application.csproj .Application/
-COPY Persistence/Persistence.csproj .Persistence/
-COPY Domain/Domain.csproj .Domain/
-RUN dotnet restore ./API/API.csproj
+COPY API/API.csproj API/
+COPY Application/Application.csproj Application/
+COPY Persistence/Persistence.csproj Persistence/
+COPY Domain/Domain.csproj Domain/
 
+# Restore dependencies
+RUN dotnet restore API/API.csproj
 
 # Salin seluruh kode sumber
-COPY . .  
+COPY . .
 
 # Build dan publish aplikasi
 RUN dotnet publish API/API.csproj -c Release -o /app/publish
