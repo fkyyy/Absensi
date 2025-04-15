@@ -14,12 +14,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Konfigurasi koneksi database
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
-
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
 });
+
+// Konfigurasi MediatR untuk setiap handler
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<GetUserList.Handler>();
@@ -30,11 +32,16 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblyContaining<GetDivisionList.Handler>();
 });
 
-builder.Services.AddAutoMapper(typeof(UserProfile), typeof(DivisionProfile), typeof(LeaveProfile), typeof(LeaveTransactionProfile), typeof(AttachmentProfile), typeof(AttendanceProfile));
+// Konfigurasi AutoMapper
+builder.Services.AddAutoMapper(typeof(UserProfile), typeof(DivisionProfile), typeof(LeaveProfile),
+    typeof(LeaveTransactionProfile), typeof(AttachmentProfile), typeof(AttendanceProfile));
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserClaimsHelper>();
+
+// Konfigurasi Swagger + JWT Auth
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Absensis API", Version = "v1" });
@@ -64,12 +71,13 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// Konfigurasi JWT Auth
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-
 .AddJwtBearer(options =>
 {
     var config = builder.Configuration;
@@ -83,9 +91,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// ✅ Tambahkan konfigurasi port 8080 agar bisa berjalan di Koyeb
+builder.WebHost.UseUrls("http://+:8080");
 
-    var app = builder.Build();
+var app = builder.Build();
 
+// Swagger hanya aktif di mode Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -97,5 +108,4 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();

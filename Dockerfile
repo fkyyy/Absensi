@@ -25,7 +25,7 @@ WORKDIR /app
 COPY --from=build-env /app/publish ./
 
 # Expose port agar bisa diakses dari luar
-EXPOSE 8000
+EXPOSE 8080
 
 # Jalankan aplikasi
 CMD ["dotnet", "API.dll"]
