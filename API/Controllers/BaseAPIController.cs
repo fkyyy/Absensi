@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BaseAPIController : ControllerBase
