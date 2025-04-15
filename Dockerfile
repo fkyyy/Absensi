@@ -5,7 +5,7 @@ WORKDIR /app
 # Salin file csproj dari setiap proyek untuk melakukan restore dependensi
 COPY API/API.csproj .API/
 COPY Application/Application.csproj .Application/
-COPY Presistence/Presistence.csproj .Presistence/
+COPY Persistence/Persistence.csproj .Persistence/
 COPY Domain/Domain.csproj .Domain/
 RUN dotnet restore API/API.csproj
 
