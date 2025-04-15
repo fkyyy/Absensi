@@ -91,21 +91,21 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// ✅ Tambahkan konfigurasi port 8080 agar bisa berjalan di Koyeb
-builder.WebHost.UseUrls("http://+:8080");
+builder.WebHost.UseUrls("http://+:8080"); // Tambahan wajib Koyeb
 
 var app = builder.Build();
 
-// Swagger hanya aktif di mode Development
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Enable Swagger di semua env
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+app.MapGet("/", () => "Absensi API is running..."); // optional, untuk root URL
+
 app.Run();
+

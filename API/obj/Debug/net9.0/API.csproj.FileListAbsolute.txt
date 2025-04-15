@@ -149,3 +149,4 @@ C:\Users\IT CLASS\Fikri\Absensis\api\bin\Debug\net9.0\Microsoft.IdentityModel.Pr
 C:\Users\IT CLASS\Fikri\Absensis\api\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\IT CLASS\Fikri\Absensis\api\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\IT CLASS\Fikri\Absensis\api\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\IT CLASS\Fikri\Absensis\API\obj\Debug\net9.0\API.sourcelink.json
