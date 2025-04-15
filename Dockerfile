@@ -7,7 +7,7 @@ COPY API/API.csproj .API/
 COPY Application/Application.csproj .Application/
 COPY Persistence/Persistence.csproj .Persistence/
 COPY Domain/Domain.csproj .Domain/
-RUN dotnet restore /API/API.csproj
+RUN dotnet restore ./API/API.csproj
 
 
 # Salin seluruh kode sumber
