@@ -11,6 +11,8 @@ using Persistence;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,12 +74,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 
     c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer
-{
-    Url = "https://ordinary-kendra-absensi-7acdcd87.koyeb.app"
+    {
+        Url = "https://ordinary-kendra-absensi-7acdcd87.koyeb.app"
+    });
 });
 
-});
-
+// Konfigurasi Authentication dengan JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -96,6 +98,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Konfigurasi CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -106,10 +109,20 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Register Cloudinary as a singleton service
+var account = new Account(
+    builder.Configuration["Cloudinary:CloudName"],     
+    builder.Configuration["Cloudinary:ApiKey"],        
+    builder.Configuration["Cloudinary:ApiSecret"]      
+);
+var cloudinary = new Cloudinary(account);
+builder.Services.AddSingleton(cloudinary);
+
 builder.WebHost.UseUrls("http://+:8080");
 
 var app = builder.Build();
 
+// Middleware setup
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("AllowFrontend");
@@ -123,4 +136,3 @@ app.MapControllers();
 app.MapGet("/", () => "Absensi API is running...");
 
 app.Run();
-

@@ -18,18 +18,16 @@ namespace Application.Attachments.Commands
             public async Task<string> Handle(Command request, CancellationToken cancellationToken)
             {
                 var userId = claims.GetUserId();
-
                 var dto = request.Attachment;
-                var fileExtension = Path.GetExtension(dto.FileSource.FileName)?.ToLowerInvariant().TrimStart('.');
 
                 var attEntity = new Attachment
                 {
                     AttachmentId = Guid.NewGuid(),
                     IdUser = userId,
-                    FileType = fileExtension ?? "unknown",
-                    FileSource = dto.FileSource.FileName
+                    FileType = dto.FileType,
+                    FileSource = dto.FileUrl
                 };
-                
+
                 context.Attachments.Add(attEntity);
                 await context.SaveChangesAsync(cancellationToken);
 

@@ -4,6 +4,8 @@ using Application.Attachments.Commands;
 using Application.Attachments.Queries;
 using Application.Attendances.Commands;
 using Application.Common.Dtos.Attachments;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +15,7 @@ using Persistence;
 
 namespace API.Controllers;
 
-public class AttachmentsController : BaseAPIController
+public class AttachmentsController(Cloudinary cloudinary) : BaseAPIController
 {
     [HttpGet]
     public async Task<ActionResult<List<AttachmentDto>>> GetAttachments()
@@ -35,37 +37,35 @@ public class AttachmentsController : BaseAPIController
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<string>> CreateAttachments([FromForm] CreateAttachmentDto at)
+    public async Task<IActionResult> UploadFile(IFormFile file)
     {
-        if (at == null || at.FileSource == null || at.FileSource.Length == 0)
-            return BadRequest("Attachment data or file is invalid.");
+        if (file == null || file.Length == 0)
+            return BadRequest("File tidak valid.");
 
-        var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(at.FileSource.FileName)}";
-        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-        if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-        var savePath = Path.Combine(folderPath, fileName);
-
-        using (var stream = new FileStream(savePath, FileMode.Create))
+        var uploadParams = new ImageUploadParams()
         {
-            await at.FileSource.CopyToAsync(stream);
-        }
-        
-        var updatedFormFile = new FormFile(at.FileSource.OpenReadStream(), 0, at.FileSource.Length, at.FileSource.Name, fileName)
-        {
-            Headers = at.FileSource.Headers,
-            ContentType = at.FileSource.ContentType
+            File = new FileDescription(file.FileName, file.OpenReadStream()),
+            Folder = "absensi_files"
         };
 
-        at.FileSource = updatedFormFile;
+        var result = await cloudinary.UploadAsync(uploadParams);
 
-        
-        var result = await mediator.Send(new CreateAttachment.Command { Attachment = at });
+        if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            return StatusCode(500, "Upload gagal.");
 
-        if (string.IsNullOrEmpty(result))
-            return BadRequest("Failed to create attachment.");
+        var attachment = new CreateAttachmentDto
+        {
+            FileSource = file,
+            FileType = result.Format,
+            FileUrl = result.Url.ToString()
+        };
 
-        return CreatedAtAction(nameof(GetAttachmentDetails), new { AttachmentId = result }, result);
+        var savedId = await mediator.Send(new CreateAttachment.Command { Attachment = attachment });
+
+        return CreatedAtAction(nameof(GetAttachmentDetails), new { AttachmentId = savedId }, attachment);
     }
+
+
 
     [Authorize]
     [HttpGet("download/{attachmentId}")]
