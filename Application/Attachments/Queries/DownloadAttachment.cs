@@ -1,3 +1,4 @@
+using System.Net.Http;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Persistence;
@@ -18,28 +19,46 @@ public class DownloadAttachment
         public string ContentType { get; set; } = "application/octet-stream";
     }
 
-    public class Handler(AppDbContext context) : IRequestHandler<Query, FileDownloadResult>
+    public class Handler : IRequestHandler<Query, FileDownloadResult>
     {
+        private readonly AppDbContext _context;
+        private readonly HttpClient _httpClient;
+
+        public Handler(AppDbContext context)
+        {
+            _context = context;
+            _httpClient = new HttpClient();
+        }
+
         public async Task<FileDownloadResult> Handle(Query request, CancellationToken cancellationToken)
         {
-            var attachment = await context.Attachments.FindAsync(new object[] { request.AttachmentId }, cancellationToken);
+            var attachment = await _context.Attachments.FindAsync(new object[] { request.AttachmentId }, cancellationToken);
 
             if (attachment == null)
                 throw new FileNotFoundException("Attachment tidak ditemukan di database.");
 
-            var filePath = Path.Combine("C:\\Users\\IT CLASS\\Fikri\\Absensis\\Application\\Common\\FileUpload", attachment.FileSource);
+            var fileUrl = attachment.FileSource;
 
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException("File tidak ditemukan di server.", filePath);
-
-            var fileBytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
-
-            return new FileDownloadResult
+            try
             {
-                FileBytes = fileBytes,
-                FileName = attachment.FileSource,
-                ContentType = GetMimeType(attachment.FileSource)
-            };
+                var response = await _httpClient.GetAsync(fileUrl, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                    throw new FileNotFoundException("Gagal mengunduh file dari Cloudinary.", fileUrl);
+
+                var fileBytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+                var contentType = response.Content.Headers.ContentType?.MediaType ?? GetMimeType(fileUrl);
+
+                return new FileDownloadResult
+                {
+                    FileBytes = fileBytes,
+                    FileName = Path.GetFileName(fileUrl),
+                    ContentType = contentType
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new IOException("Terjadi kesalahan saat mengunduh file dari Cloudinary.", ex);
+            }
         }
 
         private string GetMimeType(string fileName)
