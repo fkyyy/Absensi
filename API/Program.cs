@@ -73,12 +73,11 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer
 {
-    Url = "https://ordinary-kendra-absensi-7acdcd87.koyeb.app" // domain HTTPS dari Koyeb
+    Url = "https://ordinary-kendra-absensi-7acdcd87.koyeb.app"
 });
 
 });
 
-// Konfigurasi JWT Auth
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -97,12 +96,23 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.WebHost.UseUrls("http://+:8080"); // Tambahan wajib Koyeb
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+builder.WebHost.UseUrls("http://+:8080");
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseCors("AllowFrontend");
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();

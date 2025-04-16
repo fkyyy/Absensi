@@ -41,7 +41,9 @@ public class AttachmentsController : BaseAPIController
             return BadRequest("Attachment data or file is invalid.");
 
         var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(at.FileSource.FileName)}";
-        var savePath = Path.Combine("C:\\Users\\IT CLASS\\Fikri\\Absensis\\Application\\Common\\FileUpload", fileName);
+        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+        if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+        var savePath = Path.Combine(folderPath, fileName);
 
         using (var stream = new FileStream(savePath, FileMode.Create))
         {

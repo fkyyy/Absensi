@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "rbCvfy2ywpM=",
+  "dgSpecHash": "a72AdPHARmo=",
   "success": true,
   "projectFilePath": "C:\\Users\\IT CLASS\\Fikri\\Absensis\\Application\\Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\IT CLASS\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\IT CLASS\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\IT CLASS\\.nuget\\packages\\fluentvalidation\\9.5.4\\fluentvalidation.9.5.4.nupkg.sha512",
     "C:\\Users\\IT CLASS\\.nuget\\packages\\mediatr\\12.4.1\\mediatr.12.4.1.nupkg.sha512",
     "C:\\Users\\IT CLASS\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
     "C:\\Users\\IT CLASS\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.0\\microsoft.aspnetcore.authentication.jwtbearer.9.0.0.nupkg.sha512",
