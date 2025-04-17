@@ -13,7 +13,6 @@ namespace Application.Validators.Attendances
         CreateAttendanceDtoValidator()
         {
             RuleFor(x => x.AttendanceType)
-                .NotEmpty().WithMessage("Tipe Kehadiran harus diisi.")
                 .Must(status => Enum.IsDefined(typeof(EnumType), status)).WithMessage("Status tidak valid Hanya 0 (Hadir), 1 (WFH), atau 2 (WFA).");
         }
     }
