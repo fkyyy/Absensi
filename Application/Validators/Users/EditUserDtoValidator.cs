@@ -12,7 +12,5 @@ public class EditUserDtoValidator : AbstractValidator<EditUserDto>
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Nama harus diisi.");  
-
-
     }
 }
