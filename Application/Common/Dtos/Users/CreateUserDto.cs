@@ -11,10 +11,10 @@ public class CreateUserDto
 
     public string Role { get; set; } = string.Empty;
 
-    [Required]
+    
     public string Status { get; set; } = string.Empty;
 
-    [Required]
+    
     public Guid IdDivision { get; set; }
 }
 

@@ -20,6 +20,7 @@ using Application.Validators.Leaves;
 using Application.Validators.LeaveTransactions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Application.Validators.Attachments;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,6 +116,11 @@ builder.Services.AddValidatorsFromAssemblyContaining<EditLvDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateLvDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateLeaveDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditLeaveDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditAbsenDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateAbsenDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateAttachmentDtoValidator>();
+
+builder
 
 
 // Konfigurasi CORS
