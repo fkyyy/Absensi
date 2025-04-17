@@ -107,6 +107,16 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateAttendanceDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateDivisionDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateLoginDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditUserDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditLvDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateLvDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateLeaveDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditLeaveDtoValidator>();
+
+
 // Konfigurasi CORS
 builder.Services.AddCors(options =>
 {
