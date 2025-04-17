@@ -120,9 +120,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<EditAbsenDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateAbsenDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateAttachmentDtoValidator>();
 
-builder
-
-
 // Konfigurasi CORS
 builder.Services.AddCors(options =>
 {
