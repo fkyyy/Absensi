@@ -104,9 +104,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// builder.Services.AddFluentValidationAutoValidation();
-// builder.Services.AddFluentValidationClientsideAdapters();
-// builder.Services.AddValidatorsFromAssemblyContaining<CreateAttendanceDtoValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateAttendanceDtoValidator>();
 // Konfigurasi CORS
 builder.Services.AddCors(options =>
 {
