@@ -161,7 +161,7 @@
             },
             "FluentValidation": {
               "target": "Package",
-              "version": "[9.5.4, )"
+              "version": "[11.0.0, )"
             },
             "MediatR": {
               "target": "Package",
