@@ -29,8 +29,6 @@ public class UsersController : BaseAPIController
     [HttpPost]
     public async Task<ActionResult<string>> CreateUsers(CreateUserDto user)
     {
-        if (user == null)
-            return BadRequest("User data is invalid.");
         var result = await mediator.Send(new CreateUser.Command { User = user });
         
         if (result == null)

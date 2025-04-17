@@ -23,7 +23,7 @@ namespace Application.Validators.Users
 
             RuleFor(x => x.Role)
                 .NotEmpty().WithMessage("Role harus diisi.")
-                .Must(role => new[] { "Admin", "User" }.Contains(role)).WithMessage("Role tidak valid.");
+                .Must(role => new[] { "Admin", "Staff", "Leader" }.Contains(role)).WithMessage("Role tidak valid.");
             
             RuleFor(x => x.Status)
                 .NotEmpty().WithMessage("Status harus diisi.")
@@ -31,7 +31,7 @@ namespace Application.Validators.Users
             
             RuleFor(x => x.IdDivision)
                 .NotEmpty().WithMessage("IdDivision harus diisi.")
-                .Must(id => Guid.TryParse(id.ToString(), out _)).WithMessage("IdDivision tidak valid.");
+                .NotEqual(Guid.Empty).WithMessage("IdDivision harus dipilih.");
         }
     }
 }

@@ -6,6 +6,13 @@ using Application.Leaves.Queries;
 using Application.LeaveTransactions.Queries;
 using Application.Users.Queries;
 using Application.Users.Commands;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Application.Validators.Users;
 using Application.Validators.Attendances;
 using Application.Validators.Divisions;
@@ -13,24 +20,17 @@ using Application.Validators.Leaves;
 using Application.Validators.LeaveTransactions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Persistence;
-using System.Text;
-using CloudinaryDotNet;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Database configuration
+// Konfigurasi koneksi database
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
 });
 
-// MediatR configuration
+// Konfigurasi MediatR untuk setiap handler
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<GetUserList.Handler>();
@@ -41,49 +41,37 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblyContaining<GetDivisionList.Handler>();
 });
 
-// AutoMapper
-builder.Services.AddAutoMapper(
-    typeof(UserProfile),
-    typeof(DivisionProfile),
-    typeof(LeaveProfile),
-    typeof(LeaveTransactionProfile),
-    typeof(AttachmentProfile),
-    typeof(AttendanceProfile)
-);
-
-// FluentValidation + Controllers
+// Konfigurasi AutoMapper
+builder.Services.AddAutoMapper(typeof(UserProfile), typeof(DivisionProfile), typeof(LeaveProfile),
+    typeof(LeaveTransactionProfile), typeof(AttachmentProfile), typeof(AttendanceProfile));
 builder.Services.AddControllers();
-
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-// Claims Helper
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserClaimsHelper>();
 
-// Swagger + JWT Auth
+// Konfigurasi Swagger + JWT Auth
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Absensis API", Version = "v1" });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
-        In = ParameterLocation.Header,
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Description = "Masukkan token JWT seperti ini: Bearer {your token}"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
     {
         {
-            new OpenApiSecurityScheme
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
             },
@@ -91,13 +79,13 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    c.AddServer(new OpenApiServer
+    c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer
     {
         Url = "https://ordinary-kendra-absensi-7acdcd87.koyeb.app"
     });
 });
 
-// JWT Authentication
+// Konfigurasi Authentication dengan JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -116,7 +104,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// CORS policy
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateAttendanceDtoValidator>();
+// Konfigurasi CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -127,28 +118,26 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Cloudinary
+// Register Cloudinary as a singleton service
 var account = new Account(
-    builder.Configuration["Cloudinary:CloudName"],
-    builder.Configuration["Cloudinary:ApiKey"],
-    builder.Configuration["Cloudinary:ApiSecret"]
+    builder.Configuration["Cloudinary:CloudName"],     
+    builder.Configuration["Cloudinary:ApiKey"],        
+    builder.Configuration["Cloudinary:ApiSecret"]      
 );
 var cloudinary = new Cloudinary(account);
 builder.Services.AddSingleton(cloudinary);
 
-// Use specific port
 builder.WebHost.UseUrls("http://+:8080");
 
 var app = builder.Build();
 
-// Middleware pipeline
+// Middleware setup
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseCors("AllowFrontend");
+
 app.UseStaticFiles();
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
