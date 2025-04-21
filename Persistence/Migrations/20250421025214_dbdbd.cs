@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class dbdbd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,39 +55,12 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attendances",
-                columns: table => new
-                {
-                    IdAttendance = table.Column<Guid>(type: "uuid", nullable: false),
-                    IdUser = table.Column<Guid>(type: "uuid", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CheckIn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CheckOut = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: false),
-                    ApprovedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Attendances", x => x.IdAttendance);
-                    table.ForeignKey(
-                        name: "FK_Attendances_Users_IdUser",
-                        column: x => x.IdUser,
-                        principalTable: "Users",
-                        principalColumn: "IdUser",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Leaves",
                 columns: table => new
                 {
                     IdLeaves = table.Column<Guid>(type: "uuid", nullable: false),
                     IdUser = table.Column<Guid>(type: "uuid", nullable: false),
+                    TotalLeave = table.Column<int>(type: "integer", nullable: false),
                     RemainingLeave = table.Column<int>(type: "integer", nullable: false),
                     LeaveExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -143,11 +116,11 @@ namespace Persistence.Migrations
                 name: "Attachments",
                 columns: table => new
                 {
-                    IdAttachment = table.Column<Guid>(type: "uuid", nullable: false),
+                    AttachmentId = table.Column<Guid>(type: "uuid", nullable: false),
                     IdUser = table.Column<Guid>(type: "uuid", nullable: false),
-                    IdAttendance = table.Column<Guid>(type: "uuid", nullable: false),
                     FileType = table.Column<string>(type: "text", nullable: false),
                     FileSource = table.Column<string>(type: "text", nullable: false),
+                    IdAttendance = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
@@ -155,15 +128,46 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attachments", x => x.IdAttachment);
-                    table.ForeignKey(
-                        name: "FK_Attachments_Attendances_IdAttendance",
-                        column: x => x.IdAttendance,
-                        principalTable: "Attendances",
-                        principalColumn: "IdAttendance",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Attachments", x => x.AttachmentId);
                     table.ForeignKey(
                         name: "FK_Attachments_Users_IdUser",
+                        column: x => x.IdUser,
+                        principalTable: "Users",
+                        principalColumn: "IdUser",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attendances",
+                columns: table => new
+                {
+                    IdAttendance = table.Column<Guid>(type: "uuid", nullable: false),
+                    IdUser = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CheckIn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CheckOut = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: false),
+                    ApprovedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsApproved = table.Column<string>(type: "text", nullable: false),
+                    AttendanceType = table.Column<string>(type: "text", nullable: false),
+                    AttachmentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attendances", x => x.IdAttendance);
+                    table.ForeignKey(
+                        name: "FK_Attendances_Attachments_AttachmentId",
+                        column: x => x.AttachmentId,
+                        principalTable: "Attachments",
+                        principalColumn: "AttachmentId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Attendances_Users_IdUser",
                         column: x => x.IdUser,
                         principalTable: "Users",
                         principalColumn: "IdUser",
@@ -181,6 +185,12 @@ namespace Persistence.Migrations
                 column: "IdUser");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attendances_AttachmentId",
+                table: "Attendances",
+                column: "AttachmentId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Attendances_IdUser",
                 table: "Attendances",
                 column: "IdUser");
@@ -188,7 +198,8 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Leaves_IdUser",
                 table: "Leaves",
-                column: "IdUser");
+                column: "IdUser",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_LeaveTransactions_IdDivision",
@@ -201,16 +212,30 @@ namespace Persistence.Migrations
                 column: "IdUser");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_IdDivision",
                 table: "Users",
                 column: "IdDivision");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Attachments_Attendances_IdAttendance",
+                table: "Attachments",
+                column: "IdAttendance",
+                principalTable: "Attendances",
+                principalColumn: "IdAttendance");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Attachments");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Attachments_Attendances_IdAttendance",
+                table: "Attachments");
 
             migrationBuilder.DropTable(
                 name: "Leaves");
@@ -220,6 +245,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Attendances");
+
+            migrationBuilder.DropTable(
+                name: "Attachments");
 
             migrationBuilder.DropTable(
                 name: "Users");

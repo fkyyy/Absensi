@@ -7,12 +7,12 @@ namespace Persistence
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public required DbSet<User> Users { get; set; }
-        public required DbSet<Division> Divisions { get; set; }
-        public required DbSet<Leave> Leaves { get; set; }
-        public required DbSet<Attachment> Attachments { get; set; }
-        public required DbSet<LeaveTransaction> LeaveTransactions { get; set; }
-        public required DbSet<Attendance> Attendances { get; set; }
+        public DbSet<User> Users { get; set; } = default!;
+        public DbSet<Division> Divisions { get; set; } = default!;
+        public DbSet<Leave> Leaves { get; set; } = default!;
+        public DbSet<Attachment> Attachments { get; set; } = default!;
+        public DbSet<LeaveTransaction> LeaveTransactions { get; set; } = default!;
+        public DbSet<Attendance> Attendances { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

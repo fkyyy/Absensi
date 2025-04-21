@@ -79,11 +79,6 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
-
-    c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer
-    {
-        Url = "https://special-verna-fikriezrah-473a0ea2.koyeb.app"
-    });
 });
 
 // Konfigurasi Authentication dengan JWT
@@ -108,17 +103,17 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateAttendanceDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateDivisionDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateLoginDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<EditUserDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<EditLvDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateLvDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateLeaveDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<EditLeaveDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<EditAbsenDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateAbsenDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateAttachmentDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateDivisionDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateLoginDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<EditUserDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<EditLvDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateLvDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateLeaveDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<EditLeaveDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<EditAbsenDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateAbsenDtoValidator>();
+// builder.Services.AddValidatorsFromAssemblyContaining<CreateAttachmentDtoValidator>();
 
 // Konfigurasi CORS
 builder.Services.AddCors(options =>
@@ -140,7 +135,7 @@ var account = new Account(
 var cloudinary = new Cloudinary(account);
 builder.Services.AddSingleton(cloudinary);
 
-builder.WebHost.UseUrls("http://+:8080");
+// builder.WebHost.UseUrls("http://+:8080");
 
 var app = builder.Build();
 

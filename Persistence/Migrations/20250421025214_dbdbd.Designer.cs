@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250409091356_updatemigrationattendance")]
-    partial class updatemigrationattendance
+    [Migration("20250421025214_dbdbd")]
+    partial class dbdbd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,9 +31,6 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("AttachmentId");
-
-                    b.Property<Guid?>("AttendanceIdAttendance")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -66,8 +63,6 @@ namespace Persistence.Migrations
 
                     b.HasKey("AttachmentId");
 
-                    b.HasIndex("AttendanceIdAttendance");
-
                     b.HasIndex("IdAttendance");
 
                     b.HasIndex("IdUser");
@@ -82,7 +77,7 @@ namespace Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("IdAttendance");
 
-                    b.Property<Guid>("ApprovedBy")
+                    b.Property<Guid?>("ApprovedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("ApprovedBy");
 
@@ -116,6 +111,11 @@ namespace Persistence.Migrations
                     b.Property<Guid>("IdUser")
                         .HasColumnType("uuid")
                         .HasColumnName("IdUser");
+
+                    b.Property<string>("IsApproved")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("IsApproved");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -196,6 +196,10 @@ namespace Persistence.Migrations
                     b.Property<int>("RemainingLeave")
                         .HasColumnType("integer")
                         .HasColumnName("RemainingLeave");
+
+                    b.Property<int>("TotalLeave")
+                        .HasColumnType("integer")
+                        .HasColumnName("TotalLeave");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -324,10 +328,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Attachment", b =>
                 {
                     b.HasOne("Domain.Attendance", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("AttendanceIdAttendance");
-
-                    b.HasOne("Domain.Attendance", null)
                         .WithMany()
                         .HasForeignKey("IdAttendance")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -361,13 +361,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Leave", b =>
                 {
-                    b.HasOne("Domain.User", "Users")
+                    b.HasOne("Domain.User", "User")
                         .WithMany("Leaves")
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Users");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.LeaveTransaction", b =>
@@ -398,11 +398,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Division");
-                });
-
-            modelBuilder.Entity("Domain.Attendance", b =>
-                {
-                    b.Navigation("Attachments");
                 });
 
             modelBuilder.Entity("Domain.Division", b =>
