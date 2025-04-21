@@ -82,7 +82,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer
     {
-        Url = "https://ordinary-kendra-absensi-7acdcd87.koyeb.app"
+        Url = "https://special-verna-fikriezrah-473a0ea2.koyeb.app"
     });
 });
 
