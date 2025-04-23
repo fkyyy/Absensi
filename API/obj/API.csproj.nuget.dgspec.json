@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\IT CLASS\\Fikri\\Absensis\\api\\API.csproj": {}
+    "C:\\Users\\IT CLASS\\Fikri\\Absensis\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\IT CLASS\\Fikri\\Absensis\\api\\API.csproj": {
+    "C:\\Users\\IT CLASS\\Fikri\\Absensis\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\IT CLASS\\Fikri\\Absensis\\api\\API.csproj",
+        "projectUniqueName": "C:\\Users\\IT CLASS\\Fikri\\Absensis\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Users\\IT CLASS\\Fikri\\Absensis\\api\\API.csproj",
+        "projectPath": "C:\\Users\\IT CLASS\\Fikri\\Absensis\\API\\API.csproj",
         "packagesPath": "C:\\Users\\IT CLASS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\IT CLASS\\Fikri\\Absensis\\api\\obj\\",
+        "outputPath": "C:\\Users\\IT CLASS\\Fikri\\Absensis\\API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -161,7 +161,7 @@
             },
             "FluentValidation": {
               "target": "Package",
-              "version": "[11.0.0, )"
+              "version": "[11.3.0, )"
             },
             "MediatR": {
               "target": "Package",

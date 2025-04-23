@@ -9,7 +9,7 @@ namespace Application.Validators.Leaves
 {
     public class EditLeaveDtoValidator : AbstractValidator<EditLeaveDto>
     {
-        EditLeaveDtoValidator()
+        public EditLeaveDtoValidator()
         {
             RuleFor(x => x.IdLeaves)
                 .NotEmpty().WithMessage("IdLeaves harus diisi.")

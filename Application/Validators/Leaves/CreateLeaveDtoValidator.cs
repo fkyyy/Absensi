@@ -10,7 +10,7 @@ namespace Application.Validators.Leaves
 {
     public class CreateLeaveDtoValidator : AbstractValidator<CreateLeaveDto>
     {
-        CreateLeaveDtoValidator()
+        public CreateLeaveDtoValidator()
         {
             RuleFor(x => x.IdUser)
                 .NotEmpty().WithMessage("IdUser harus diisi.")

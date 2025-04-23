@@ -9,7 +9,7 @@ namespace Application.Validators.LeaveTransactions
 {
     public class EditLvDtoValidator : AbstractValidator<EditLeaveTransactionDto>
     {
-        EditLvDtoValidator()
+        public EditLvDtoValidator()
         {
             RuleFor(x => x.IdTransaction)
                 .NotEmpty().WithMessage("IdTransaction harus diisi.")
